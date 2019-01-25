@@ -10,7 +10,7 @@ const { dbConnect } = require('./db-mongoose');
 
 const catQueue = require('./queues/cat-queue');
 const dogQueue = require('./queues/dog-queue');
-const {enqueue, dequeueu, peek} = require('./queues/queue');
+const Queue = require('./queues/queue');
 
 const app = express();
 
@@ -106,24 +106,23 @@ const dogs = [
 
 
 app.get('/api/cat', (req, res) => {
-  console.log(req);
-  catQueue.peek();
-  return res.json(cats[0]);
+  const cat = catQueue.peek();
+  return res.json(cat);
 });
 
 app.get('/api/dog', (req, res) => {
-  console.log(req);
-  return res.json(dogs[0]);
+  const dog = dogQueue.peek();
+  return res.json(dog);
 });
 
 app.delete('/api/cat', (req, res) => {
-  cats.splice(0, 1);
-  return res.json(cats[0]);
+  catQueue.dequeue();
+  return res.sendStatus(204);
 });
 
 app.delete('/api/dog', (req, res) => {
-  dogs.splice(0, 1);
-  return res.json(dogs[0]);
+  dogQueue.dequeue();
+  return res.sendStatus(204);
 });
 
 function runServer(port = PORT) {
@@ -138,7 +137,7 @@ function runServer(port = PORT) {
 }
 
 if (require.main === module) {
-  dbConnect();
+  // dbConnect();
   runServer();
 }
 

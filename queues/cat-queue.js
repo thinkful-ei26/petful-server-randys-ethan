@@ -47,6 +47,4 @@ for (let i = 0; i < cats.length; i++) {
   catQueue.enqueue(cats[i]);
 }
 
-console.log(catQueue);
-
 module.exports = catQueue;
